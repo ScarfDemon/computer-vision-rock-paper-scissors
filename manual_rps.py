@@ -6,7 +6,7 @@ options = ["rock", "paper", "scissors"]
 def get_computer_choice():
     #global options
     #computer_choice = random.choice(options)
-    return random.choice(["rock", "paper", "scissors"])
+    return random.choice(["Rock", "Paper", "Scissors"])
 
 print(get_computer_choice())
 
