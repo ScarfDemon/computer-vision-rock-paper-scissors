@@ -11,8 +11,8 @@ def get_computer_choice():
 print(get_computer_choice())
 
 def get_user_choice():
-    user_choice = input("Please input your RPS choice: ").lower()
-    return user_choice
+    #user_choice = input("Please input your RPS choice: ").lower()
+    return input("Please input your RPS choice: ")
 # %%
 # def roshambo():
 
