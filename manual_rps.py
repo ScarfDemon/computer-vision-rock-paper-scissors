@@ -4,13 +4,8 @@ import random
 def get_computer_choice():
     return random.choice(["Rock", "Paper", "Scissors"])
 
-print(get_computer_choice())
-
 def get_user_choice():
     return input("Please input your RPS choice: ")
-
-user_choice = get_user_choice().capitalize()
-computer_choice = get_computer_choice()
 
 def get_winner(computer_choice, user_choice):
 
@@ -30,4 +25,11 @@ def get_winner(computer_choice, user_choice):
             print("You won!")
         else:
             print("You lost!")
-        
+
+def play():
+    user_choice = get_user_choice().capitalize()
+    computer_choice = get_computer_choice()
+    get_winner(computer_choice, user_choice)
+
+play()
+
