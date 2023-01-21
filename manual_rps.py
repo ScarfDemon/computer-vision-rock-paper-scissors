@@ -1,16 +1,19 @@
+# %%
 import random
 
 options = ["rock", "paper", "scissors"]
 
 def get_computer_choice():
     global options
-    computer_choice = random.choice(["rock", "paper", "scissors"])
-    return computer_choice
+    computer_choice = random.choice(options)
+    return random.choice(["rock", "paper", "scissors"])
+
+print(get_computer_choice())
 
 def get_user_choice():
     user_choice = input("Please input your RPS choice: ").lower()
     return user_choice
-
+# %%
 # def roshambo():
 
 #     def valid(user_choice):
