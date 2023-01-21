@@ -3,6 +3,7 @@ import random
 options = ["rock", "paper", "scissors"]
 
 def get_computer_choice():
+    global options
     computer_choice = random.choice(options)
     return computer_choice
 
