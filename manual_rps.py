@@ -4,7 +4,7 @@ options = ["rock", "paper", "scissors"]
 
 def get_computer_choice():
     global options
-    computer_choice = random.choice(options)
+    computer_choice = random.choice(["rock", "paper", "scissors"])
     return computer_choice
 
 def get_user_choice():
