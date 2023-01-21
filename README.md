@@ -6,4 +6,21 @@ Using [Teachable-Machine](https://teachablemachine.withgoogle.com/), four classe
 
 The model was then downloaded as a Tensorflow model as a folder containing the model as  `keras_model.h5`,  and labels `labels.txt`.
 
+## Rock Paper Scissors game methods
+
+### `get_computer_choice()`
+This function returns a random choice from 'Rock', 'Paper', 'Scissors'.
+
+### `get_user_choice()`
+This function asks the user for their choice.
+
+### `get_winner(computer_choice, user_choice)`
+This function takes two arguments: the computer's random choice, and the user's choice.
+
+First the function checks the inputted choice by the user is valid. 
+
+If the input is valid, the function then goes on to apply the rules of Rock, Paper, Scissors, letting the user know if they won, lost or tied.
+
+### `play()`
+This function runs the game, using the previously defined functions.
 
