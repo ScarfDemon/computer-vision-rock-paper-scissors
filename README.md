@@ -4,7 +4,14 @@ In this project a trained computer vision model was produced using [Teachable-Ma
 ## Training image project model using Teachable-Machine
 Using [Teachable-Machine](https://teachablemachine.withgoogle.com/), four classes are made: Rock, Paper, Scissors, and Nothing. Each class is trained with images of me with the correct gesture (or no gesture for the Nothing class).
 
-The model was then downloaded as a Tensorflow model as a folder containing the model as  `keras_model.h5`,  and labels `labels.txt`.
+(The model was then downloaded as a Tensorflow model as a folder containing the model as  `keras_model.h5`,  and labels `labels.txt`.)
+
+The variable `prediction` contains the output of the model, and each element in the output corresponds to the probability of the input image representing a particular class.
+
+So, for example, if the prediction has the following output: [[0.8, 0.1, 0.05, 0.05]], there is an 80% chance that the input image shows rock, a 10% chance that it shows paper, a 5% chance that it shows scissors, and a 5% chance that it shows nothing.
+
+## Requirements.txt
+To install the exact dependancies to run the "Rock, Paper, Scissors" Game, run `pip install requirements.txt`
 
 ## Rock Paper Scissors game methods
 
