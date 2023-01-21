@@ -14,10 +14,12 @@ def get_user_choice():
 def roshambo():
 
     def valid(user_choice):
+        global options
         return (user_choice in options) == True #valid=True if user_choice are correct
     
     global user_choice
     global computer_choice
+    
     while valid(user_choice) == False:
         print("Invalid input")
         user_choice = input("Please input your valid RPS choice: ").lower()
