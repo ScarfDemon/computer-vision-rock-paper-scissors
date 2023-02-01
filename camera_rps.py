@@ -45,40 +45,44 @@ while True:
         t_init = time.time()
         computer_choice = manual_rps.get_computer_choice()
         cv2.putText(frame, "HELLO THERE", (600,200), cv2.FONT_HERSHEY_SIMPLEX ,  4, (192, 192, 192), 4, cv2.LINE_AA)
-        # while True:
-        #     if (time.time() - t_init) > time_limit:
-        #         print(time.time()-t_init)
-        #         final_predicted_choice = predicted_user_choice
-        #         predicted_user_choice_confidence = probability
-        #         print(final_predicted_choice, "    ", predicted_user_choice_confidence)
-        #         cv2.putText(frame, f"{final_predicted_choice} vs {computer_choice}", (300, 500), font ,  3, (192, 192, 192), 2, cv2.LINE_AA)
-        #         cv2.imshow('frame', frame)
-        #         #cap.release()
-        #         cv2.waitKey(3000)
-        #         break
-        #     elif (time.time() - t_init).is_integer() == True:
-        #         print(time.time()-t_init)
-        #         font = cv2.FONT_HERSHEY_SIMPLEX
-        #         cv2.putText(frame, str(t), (600,200), font ,  4, (192, 192, 192), 4, cv2.LINE_AA)
-        #         cv2.imshow('frame', frame)
-        #         print(t)
-        #         t -= 1
-        #         cv2.waitKey(500)
-        #         #cap.release()
-        #         continue
-        #     else:
-        #         cap.release()
-        #         continue
+        broken = False
+        while broken==False:
+            if (time.time() - t_init) > time_limit:
+                print(time.time()-t_init)
+                final_predicted_choice = predicted_user_choice
+                predicted_user_choice_confidence = probability
+                print(final_predicted_choice, "    ", predicted_user_choice_confidence)
+                cv2.putText(frame, f"{final_predicted_choice} vs {computer_choice}", (300, 500), font ,  3, (192, 192, 192), 2, cv2.LINE_AA)
+                cv2.imshow('frame', frame)
+                #cap.release()
+                #cv2.waitKey(3000)
+                broken = True
+            elif (time.time() - t_init).is_integer() == True:
+                print(time.time()-t_init)
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                cv2.putText(frame, str(t), (600,200), font ,  4, (192, 192, 192), 4, cv2.LINE_AA)
+                cv2.imshow('frame', frame)
+                print(t)
+                t -= 1
+                #cv2.waitKey(500)
+                #cap.release()
+                continue
+            else:
+                #cap.release()
+                continue
+
+            if broken == True:
+                break
+        #continue
             
 
     cv2.imshow('frame', frame)
     # Press q to close the window
     if keys == ord('q'):
-        cap.release()
         break
             
 # After the loop release the cap object
-
+cap.release()
 # Destroy all the windows
 cv2.destroyAllWindows()
     
