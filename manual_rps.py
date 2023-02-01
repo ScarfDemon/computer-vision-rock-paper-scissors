@@ -31,5 +31,5 @@ def play():
     computer_choice = get_computer_choice()
     get_winner(computer_choice, user_choice)
 
-play()
+#play()
 
