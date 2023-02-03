@@ -14,8 +14,7 @@ data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
 
 # %%
 def get_prediction():
-    prediction = model.predict(data)
-    prediction = prediction.tolist()
+    prediction = model.predict(data).tolist()
     probabilities = dict(zip(["Rock", "Scissors", "Paper", "Nothing"], *prediction))
     probability = round(max(probabilities.values()), 2)
     predicted_user_choice = max(probabilities, key = probabilities.get)
@@ -36,11 +35,9 @@ def display_score():
 def display_text_time(text, t):
     global t_init, frame
     if (t < (time.time() - t_init) < (t+1)) and  ((time.time() - t_init) < (time_limit - 2)):
-        cv2.putText(frame, text, (50,100), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
+        cv2.putText(frame, text, (100,400), cv2.FONT_HERSHEY_SIMPLEX ,  2, (192, 192, 192), 2, cv2.LINE_AA)
         cv2.imshow('frame', frame)
         cv2.waitKey(2)
-    else:
-        pass
 
 def display_window(cap, data):
             ret, frame = cap.read()
@@ -51,8 +48,8 @@ def display_window(cap, data):
             return frame
 # %%
 
-computer_score = 2
-user_score = 2
+computer_score = 1
+user_score = 1
 
 while True: 
     keys = cv2.waitKey(1) & 0xFF
@@ -74,20 +71,18 @@ while True:
         import manual_rps
         t_init = time.time()
         time_limit = 8
-        t = 0
         computer_choice = manual_rps.get_computer_choice()
-        broken = False
-        #display_score(computer_score, user_score)
-        while broken==False:
-            
+
+        while True:
+
             frame = display_window(cap, data)
             predicted_user_choice, probability = get_prediction()
-            display_score()
+            #display_score()
             cv2.putText(frame, f"You're choice: {predicted_user_choice}  Confidence: {probability}", (50,50), font ,  1, (192, 192, 192), 2, cv2.LINE_AA)
             cv2.putText(frame, "First to 3 points wins!", (925,30), font ,  1, (192, 192, 192), 1, cv2.LINE_AA)
-            #display_score(computer_score, user_score)
+
             if (time.time() - t_init) > time_limit:
-                broken = True
+                break
             elif (time.time() - t_init) > (time_limit - 2):
                 P1, P2 = final_user_choice, computer_choice
                 if P1 == P2:
@@ -116,24 +111,12 @@ while True:
                 for i in range(len(options)):
                     display_text_time(options[i], i)
 
-                        
-            else:
-                continue
-            if broken == True:
-                break
         if winner == "user":
             user_score += 1
         elif winner == "computer":
             computer_score += 1
-        else:
-            None
-        display_score()
-        #continue
-            
-
+            display_score()
     cv2.imshow('frame', frame)
-
-
     
     if (user_score == 3) or (computer_score == 3):
         t_init = time.time()
@@ -142,12 +125,9 @@ while True:
             if (user_score == 3):
                 cv2.putText(frame, "Congratulations!", (50, 300), font ,  3, (192, 192, 192), 2, cv2.LINE_AA)
                 cv2.putText(frame, " You won the game!", (50, 400), font ,  3, (192, 192, 192), 2, cv2.LINE_AA)
-                
             elif (computer_score == 3):
                 cv2.putText(frame, "The computer won ", (50, 300), font ,  3, (192, 192, 192), 2, cv2.LINE_AA)
                 cv2.putText(frame, "the game this time!", (50, 400), font ,  3, (192, 192, 192), 2, cv2.LINE_AA)
-            else:
-                continue
             
             cv2.imshow('frame', frame)
             cv2.waitKey(2)
@@ -156,8 +136,8 @@ while True:
                 broken = True
             
             if broken == True:
-                computer_score = 2
-                user_score = 2
+                computer_score = 1
+                user_score = 1
                 break
 
 
