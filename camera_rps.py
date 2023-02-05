@@ -36,7 +36,7 @@ def display_score():
     cv2.putText(frame, f"  {user_score}   |   {computer_score}", (987, 645), font ,  1, (192, 192, 192), 2, cv2.LINE_AA)
 
 def display_text_countdown(text, t):
-    global t_init, frame
+    global t_init, frame, options
     if (t < (time.time() - t_init) < (t+1)) and  ((time.time() - t_init) < (time_limit - 2)):
         cv2.putText(frame, text, (100,400), cv2.FONT_HERSHEY_SIMPLEX ,  2, (192, 192, 192), 2, cv2.LINE_AA)
         cv2.imshow('frame', frame)
@@ -100,7 +100,7 @@ while True:
     if keys == ord('s'):
         
         t_init = time.time()
-        time_limit = 8
+        time_limit = 9
         computer_choice = get_computer_choice()
 
         while True:
@@ -124,7 +124,7 @@ while True:
             elif (time.time() - t_init) > (time_limit - 4):
                 final_user_choice, final_user_choice_confidence = get_user_choice()
             elif (time.time() - t_init) >= 0:
-                options = ["Rock", "Paper", "Scissors", "Shoot!", "Shoot!"]
+                options = ["On shoot, ready?", "Rock", "Paper", "Scissors", "Shoot!"]
                 for i in range(len(options)):
                     display_text_countdown(options[i], i)
 
