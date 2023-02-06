@@ -62,10 +62,10 @@ def get_winner(final_user_choice, computer_choice): # returns winner and display
     P1, P2 = final_user_choice, computer_choice
     if P1 == P2:
         cv2.putText(frame, "It's a tie!", (50, 400), font ,  3, (192, 192, 192), 2, cv2.LINE_AA)
-        winner = "None"
+        winner = None
     elif P1 == "Nothing":
         cv2.putText(frame, "No choice detected, please try again!", (50, 400), font ,  1, (192, 192, 192), 1, cv2.LINE_AA)
-        winner = "None"
+        winner = None
     elif (P1=="Rock" and P2=="Scissors") or (P1=="Paper" and P2=="Rock") or (P1=="Scissors" and P2=="Paper"):
         cv2.putText(frame, "You won!", (50, 400), font ,  3, (192, 192, 192), 2, cv2.LINE_AA)
         winner = "user"
@@ -83,7 +83,7 @@ def winner_text(): # displays text of overall winner of game
         cv2.putText(frame, "The computer won ", (50, 300), font ,  3, (192, 192, 192), 2, cv2.LINE_AA)
         cv2.putText(frame, "  the game this time!", (50, 400), font ,  3, (192, 192, 192), 2, cv2.LINE_AA)
 
-def reset_scores(starting_score = 2): # resets score eg at the end of a game
+def reset_scores(starting_score = 0): # resets score eg at the end of a game
     global computer_score, user_score
     computer_score = starting_score
     user_score = starting_score
@@ -145,7 +145,9 @@ while True:
             user_score += 1
         elif winner == "computer":
             computer_score += 1
+        
         display_info()
+
     cv2.imshow('frame', frame)
 
     # end game at 3 points and display text of the winner of the entire game
