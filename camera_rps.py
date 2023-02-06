@@ -12,11 +12,14 @@ cap = cv2.VideoCapture(0)
 data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
 
 # %%
-class RPS:
+class RPS():
+    
     def __init__(self):
-        self.model = model
-        self.data = data
-        self.cap = cap
+        self.time_per_round = 9
+        self.user_score = 0
+        self.computer_score = 0
+        #self.options = ["Rock", "Paper", "Scissors", "Nothing"]
+        
 
     def get_prediction(self):
         prediction = model.predict(data).tolist()
@@ -41,8 +44,8 @@ class RPS:
         cv2.putText(frame, f"  {user_score}   |   {computer_score}", (987, 645), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
 
     def display_text_countdown(self, text, t):
-        global t_init, frame, options, time_limit
-        if (t < (time.time() - t_init) < (t+1)) and  ((time.time() - t_init) < (time_limit - 2)):
+        global t_init, frame
+        if (t < (time.time() - t_init) < (t+1)) and  ((time.time() - t_init) < (self.time_per_round - 2)):
             cv2.putText(frame, text, (100,400), cv2.FONT_HERSHEY_SIMPLEX ,  2, (192, 192, 192), 2, cv2.LINE_AA)
             cv2.imshow('frame', frame)
             cv2.waitKey(2)
@@ -56,11 +59,11 @@ class RPS:
         return frame
 
     def winner_text(self):
-        global frame, user_score, computer_score
-        if (user_score == 3):
+        global frame
+        if self.user_score == 3:
             cv2.putText(frame, "Congratulations!", (50, 300), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
             cv2.putText(frame, "  You won the game!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
-        elif (computer_score == 3):
+        elif self.computer_score == 3:
             cv2.putText(frame, "The computer won ", (50, 300), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
             cv2.putText(frame, "  the game this time!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
 
@@ -88,7 +91,7 @@ class RPS:
 
     def RPS_round(self):
         t_init = time.time()
-        time_limit = 9
+        self.time_per_round = 9
         computer_choice = self.get_computer_choice()
 
         while True:
@@ -98,18 +101,18 @@ class RPS:
             cv2.putText(frame, f"You're choice: {predicted_user_choice}  Confidence: {probability}", (50,50), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
             cv2.putText(frame, "First to 3 points wins!", (925,30), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 1, cv2.LINE_AA)
 
-            if (time.time() - t_init) > time_limit:
+            if (time.time() - t_init) > self.time_per_round:
                 break
-            elif (time.time() - t_init) > (time_limit - 2):
+            elif (time.time() - t_init) > (self.time_per_round - 2):
                 winner = self.get_winner(final_user_choice, computer_choice)
                 cv2.imshow('frame', frame)
                 cv2.waitKey(2)
-            elif (time.time() - t_init) > (time_limit - 3):
+            elif (time.time() - t_init) > (self.time_per_round - 3):
                 print(time.time() - t_init)
                 cv2.putText(frame, f"{final_user_choice} vs {computer_choice}", (50, 300), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
                 cv2.imshow('frame', frame)
                 cv2.waitKey(2)   
-            elif (time.time() - t_init) > (time_limit - 4):
+            elif (time.time() - t_init) > (self.time_per_round - 4):
                 final_user_choice, final_user_choice_confidence = self.get_user_choice()
             elif (time.time() - t_init) >= 0:
                 options = ["On shoot, ready?", "Rock", "Paper", "Scissors", "Shoot!"]
@@ -117,9 +120,9 @@ class RPS:
                     self.display_text_countdown(options[i], i)
 
         if winner == "user":
-            user_score += 1
+            self.user_score += 1
         elif winner == "computer":
-            computer_score += 1
+            self.computer_score += 1
         self.display_score()
     
     def end_game(self):
@@ -132,10 +135,13 @@ class RPS:
             if (time.time()-t_init) > 2:
                 broken = True
             if broken == True:
-                computer_score, user_score = reset_scores()
+                self.computer_score, self.user_score = self.reset_scores()
                 break
     
     def display_window_text(self):
+        global frame, cap, data
+        frame = self.display_window(cap, data)
+        predicted_user_choice, probability = self.get_prediction()
         cv2.putText(frame, f"You're choice: {predicted_user_choice}  Confidence: {probability}", (50,50), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
         cv2.putText(frame, "First to 3 points wins!", (925,30), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 1, cv2.LINE_AA)
         cv2.putText(frame, "  Press [S] to start", (950,70), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 1, cv2.LINE_AA)
@@ -147,26 +153,23 @@ class RPS:
 
 def play_game():
     play = RPS()
-    computer_score, user_score = play.reset_scores()
+    #play.reset_scores()
 
     while True: 
 
         keys = cv2.waitKey(1) & 0xFF
-        frame = play.display_window(cap, data)
-
-        predicted_user_choice, probability = play.get_prediction()
-
+        
         play.display_window_text()
 
         play.display_score()
         
-        if keys == ord('s'):
-            play.RPS_round()
+        # if keys == ord('s'):
+        #     play.RPS_round()
 
-        cv2.imshow('frame', frame)
+        # cv2.imshow('frame', frame)
         
-        if (user_score == 3) or (computer_score == 3):
-            play.end_game()
+        # if (user_score == 3) or (computer_score == 3):
+        #     play.end_game()
         # Press q to close the window
         if keys == ord('q'):
             break
