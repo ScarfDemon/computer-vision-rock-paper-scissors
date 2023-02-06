@@ -15,6 +15,8 @@ def validate(user_choice):
 
 def get_winner(computer_choice, user_choice):
     user_choice = validate(user_choice)
+    user_choice = user_choice.capitalize()
+    computer_choice = computer_choice.capitalize()
     print(f"Game: {user_choice} vs {computer_choice}")
     if user_choice == computer_choice:
         print("It is a tie!")
@@ -28,7 +30,7 @@ def get_winner(computer_choice, user_choice):
     return winner
 
 def play():
-    user_choice = get_user_choice().capitalize()
+    user_choice = get_user_choice()
     computer_choice = get_computer_choice()
     get_winner(computer_choice, user_choice)
 
