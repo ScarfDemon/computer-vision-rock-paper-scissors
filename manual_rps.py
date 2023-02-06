@@ -21,10 +21,14 @@ def get_winner(computer_choice, user_choice):
     print(f"Game: {P1} vs {P2}")
     if P1 == P2:
         print("It is a tie!")
+        winner = None
     elif (P1=="Rock" and P2=="Scissors") or (P1=="Paper" and P2=="Rock") or (P1=="Scissors" and P2=="Paper"):
         print("You won!")
+        winner = "User"
     else:
         print("You lost!")
+        winner = "Computer"
+    return winner
 
 def play():
     user_choice = get_user_choice().capitalize()
