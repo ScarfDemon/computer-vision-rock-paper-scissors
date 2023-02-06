@@ -76,11 +76,15 @@ def get_winner(final_user_choice, computer_choice):
         winner = "computer"
     return winner
 
+def reset_scores(starting_score = 2):
+    global computer_score, user_score
+    computer_score = starting_score
+    user_score = starting_score
+
 # %%
 
-starting_score = 2
-computer_score = starting_score
-user_score = starting_score
+
+reset_scores()
 
 while True: 
 
@@ -146,8 +150,7 @@ while True:
             if (time.time()-t_init) > 2:
                 broken = True
             if broken == True:
-                computer_score = starting_score
-                user_score = starting_score
+                reset_scores()
                 break
     # Press q to close the window
     if keys == ord('q'):
