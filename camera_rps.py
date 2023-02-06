@@ -12,6 +12,15 @@ cap = cv2.VideoCapture(0)
 data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
 
 # %%
+
+def display_window(cap, data): # Opens window and camera
+    ret, frame = cap.read()
+    resized_frame = cv2.resize(frame, (224, 224), interpolation = cv2.INTER_AREA)
+    image_np = np.array(resized_frame)
+    normalized_image = (image_np.astype(np.float32) / 127.0) - 1 # Normalize the image
+    data[0] = normalized_image
+    return frame
+
 def get_prediction(): # predicts what action the user has chosen currently
     global model, data
     prediction = model.predict(data).tolist()
@@ -19,6 +28,12 @@ def get_prediction(): # predicts what action the user has chosen currently
     probability = round(max(probabilities.values()), 2)
     predicted_user_choice = max(probabilities, key = probabilities.get)
     return predicted_user_choice, probability
+
+def display_score(): # displays current scores in the window
+    global computer_score, user_score, font
+    cv2.putText(frame, "You  | Computer", (1000, 600), font ,  1, (192, 192, 192), 2, cv2.LINE_AA)
+    cv2.putText(frame, "________________", (990, 610), font ,  1, (192, 192, 192), 2, cv2.LINE_AA)
+    cv2.putText(frame, f"  {user_score}   |   {computer_score}", (987, 645), font ,  1, (192, 192, 192), 2, cv2.LINE_AA)
 
 def get_user_choice(): # used to get the user's choice after the countdown for a round
     global predicted_user_choice, probability
@@ -29,35 +44,12 @@ def get_user_choice(): # used to get the user's choice after the countdown for a
 def get_computer_choice(): # randomly chooses computer's choice for a round
     return random.choice(["Rock", "Paper", "Scissors"])
 
-def display_score(): # displays current scores in the window
-    global computer_score, user_score, font
-    cv2.putText(frame, "You  | Computer", (1000, 600), font ,  1, (192, 192, 192), 2, cv2.LINE_AA)
-    cv2.putText(frame, "________________", (990, 610), font ,  1, (192, 192, 192), 2, cv2.LINE_AA)
-    cv2.putText(frame, f"  {user_score}   |   {computer_score}", (987, 645), font ,  1, (192, 192, 192), 2, cv2.LINE_AA)
-
 def display_text_countdown(text, t): # Used to display coundown text saying Rock, Paper, Scissors, Shoot! at the correct time
     global t_init, frame, options
     if (t < (time.time() - t_init) < (t+1)) and  ((time.time() - t_init) < (time_limit - 2)):
         cv2.putText(frame, text, (100,400), cv2.FONT_HERSHEY_SIMPLEX ,  2, (192, 192, 192), 2, cv2.LINE_AA)
         cv2.imshow('frame', frame)
         cv2.waitKey(2)
-
-def display_window(cap, data): # Opens window and camera
-            ret, frame = cap.read()
-            resized_frame = cv2.resize(frame, (224, 224), interpolation = cv2.INTER_AREA)
-            image_np = np.array(resized_frame)
-            normalized_image = (image_np.astype(np.float32) / 127.0) - 1 # Normalize the image
-            data[0] = normalized_image
-            return frame
-
-def winner_text(): # displays text of overall winner of game
-    global frame, font, user_score, computer_score
-    if (user_score == 3):
-        cv2.putText(frame, "Congratulations!", (50, 300), font ,  3, (192, 192, 192), 2, cv2.LINE_AA)
-        cv2.putText(frame, "  You won the game!", (50, 400), font ,  3, (192, 192, 192), 2, cv2.LINE_AA)
-    elif (computer_score == 3):
-        cv2.putText(frame, "The computer won ", (50, 300), font ,  3, (192, 192, 192), 2, cv2.LINE_AA)
-        cv2.putText(frame, "  the game this time!", (50, 400), font ,  3, (192, 192, 192), 2, cv2.LINE_AA)
 
 def get_winner(final_user_choice, computer_choice): # returns winner and displays text for winner of that round
     global frame, font
@@ -75,6 +67,15 @@ def get_winner(final_user_choice, computer_choice): # returns winner and display
         cv2.putText(frame, "You lost :(", (50, 400), font ,  3, (192, 192, 192), 2, cv2.LINE_AA)
         winner = "computer"
     return winner
+
+def winner_text(): # displays text of overall winner of game
+    global frame, font, user_score, computer_score
+    if (user_score == 3):
+        cv2.putText(frame, "Congratulations!", (50, 300), font ,  3, (192, 192, 192), 2, cv2.LINE_AA)
+        cv2.putText(frame, "  You won the game!", (50, 400), font ,  3, (192, 192, 192), 2, cv2.LINE_AA)
+    elif (computer_score == 3):
+        cv2.putText(frame, "The computer won ", (50, 300), font ,  3, (192, 192, 192), 2, cv2.LINE_AA)
+        cv2.putText(frame, "  the game this time!", (50, 400), font ,  3, (192, 192, 192), 2, cv2.LINE_AA)
 
 def reset_scores(starting_score = 2): # resets score eg at the end of a game
     global computer_score, user_score
@@ -113,7 +114,7 @@ while True:
             cv2.putText(frame, f"You're choice: {predicted_user_choice}  Confidence: {probability}", (50,50), font ,  1, (192, 192, 192), 2, cv2.LINE_AA)
             cv2.putText(frame, "First to 3 points wins!", (925,30), font ,  1, (192, 192, 192), 1, cv2.LINE_AA)
 
-            # at 9 seconds end the round, break out of while loop
+            # at 9 seconds, end the round, break out of while loop
             if (time.time() - t_init) > time_limit: 
                 break
 
@@ -151,16 +152,16 @@ while True:
     # end game at 3 points and display text of the winner of the entire game
     if (user_score == 3) or (computer_score == 3): 
         t_init = time.time()
-        broken = False
-        while ((time.time()-t_init) <= 2) and (broken == False):
+        
+        # put overall winner text on for 2 seconds
+        while (time.time()-t_init) <= 2: 
             winner_text()
             cv2.imshow('frame', frame)
             cv2.waitKey(2)
             if (time.time()-t_init) > 2:
-                broken = True
-            if broken == True:
-                reset_scores()
                 break
+        reset_scores()
+
 
     # Press q to close the window
     if keys == ord('q'):
@@ -168,6 +169,7 @@ while True:
             
 # After the loop release the cap object
 cap.release()
+
 # Destroy all the windows
 cv2.destroyAllWindows()
     
