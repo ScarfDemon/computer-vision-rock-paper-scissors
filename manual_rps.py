@@ -8,7 +8,7 @@ def get_user_choice():
     return input("Please input your RPS choice: ")
 
 def validate(user_choice):
-    while user_choice not in ['Rock', 'Paper', 'Scissors']: #valid=True if user_choice are correct
+    while user_choice not in ["Rock", "Paper", "Scissors"]: #valid=True if user_choice are correct
         print("Invalid input")
         user_choice = input("Please input your valid RPS choice: ").capitalize()
     return user_choice
@@ -23,7 +23,7 @@ def get_winner(computer_choice, user_choice):
         print("You won!")
         winner = "User"
     else:
-        print("You lost!")
+        print("You lost")
         winner = "Computer"
     return winner
 
