@@ -14,15 +14,12 @@ def validate(user_choice):
     return user_choice
 
 def get_winner(computer_choice, user_choice):
-
     user_choice = validate(user_choice)
-
-    P1, P2 = user_choice, computer_choice
-    print(f"Game: {P1} vs {P2}")
-    if P1 == P2:
+    print(f"Game: {user_choice} vs {computer_choice}")
+    if user_choice == computer_choice:
         print("It is a tie!")
         winner = None
-    elif (P1=="Rock" and P2=="Scissors") or (P1=="Paper" and P2=="Rock") or (P1=="Scissors" and P2=="Paper"):
+    elif (user_choice=="Rock" and computer_choice=="Scissors") or (user_choice=="Paper" and computer_choice=="Rock") or (user_choice=="Scissors" and computer_choice=="Paper"):
         print("You won!")
         winner = "User"
     else:
