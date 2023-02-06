@@ -29,11 +29,17 @@ def get_prediction(): # predicts what action the user has chosen currently
     predicted_user_choice = max(probabilities, key = probabilities.get)
     return predicted_user_choice, probability
 
-def display_score(): # displays current scores in the window
+def display_info(round = False): # displays current scores in the window
     global computer_score, user_score, font
-    cv2.putText(frame, "You  | Computer", (1000, 600), font ,  1, (192, 192, 192), 2, cv2.LINE_AA)
-    cv2.putText(frame, "________________", (990, 610), font ,  1, (192, 192, 192), 2, cv2.LINE_AA)
-    cv2.putText(frame, f"  {user_score}   |   {computer_score}", (987, 645), font ,  1, (192, 192, 192), 2, cv2.LINE_AA)
+    cv2.putText(frame, f"You're choice: {predicted_user_choice}  Confidence: {probability}", (50,50), font ,  1, (192, 192, 192), 2, cv2.LINE_AA)
+    cv2.putText(frame, "First to 3 points wins!", (925,30), font ,  1, (192, 192, 192), 1, cv2.LINE_AA)
+    if round == False:
+        cv2.putText(frame, "  Press [S] to start", (950,70), font ,  1, (192, 192, 192), 1, cv2.LINE_AA)
+        cv2.putText(frame, "      or [Q] to quit", (950,110), font ,  1, (192, 192, 192), 1, cv2.LINE_AA)
+        cv2.putText(frame, "You  | Computer", (1000, 600), font ,  1, (192, 192, 192), 2, cv2.LINE_AA)
+        cv2.putText(frame, "________________", (990, 610), font ,  1, (192, 192, 192), 2, cv2.LINE_AA)
+        cv2.putText(frame, f"  {user_score}   |   {computer_score}", (987, 645), font ,  1, (192, 192, 192), 2, cv2.LINE_AA)
+    
 
 def get_user_choice(): # used to get the user's choice after the countdown for a round
     global predicted_user_choice, probability
@@ -94,14 +100,9 @@ while True:
     font = cv2.FONT_HERSHEY_SIMPLEX
     predicted_user_choice, probability = get_prediction()
 
-    cv2.putText(frame, f"You're choice: {predicted_user_choice}  Confidence: {probability}", (50,50), font ,  1, (192, 192, 192), 2, cv2.LINE_AA)
-    cv2.putText(frame, "First to 3 points wins!", (925,30), font ,  1, (192, 192, 192), 1, cv2.LINE_AA)
-    cv2.putText(frame, "  Press [S] to start", (950,70), font ,  1, (192, 192, 192), 1, cv2.LINE_AA)
-    cv2.putText(frame, "      or [Q] to quit", (950,110), font ,  1, (192, 192, 192), 1, cv2.LINE_AA)
-
-    display_score()
+    display_info()
     
-    if keys == ord('s'): # start round
+    if keys == ord('s'): # press s to start round
         
         t_init = time.time() # the time at the start of the round
         time_limit = 9 # the round is 9 seconds long
@@ -111,8 +112,7 @@ while True:
 
             frame = display_window(cap, data)
             predicted_user_choice, probability = get_prediction()
-            cv2.putText(frame, f"You're choice: {predicted_user_choice}  Confidence: {probability}", (50,50), font ,  1, (192, 192, 192), 2, cv2.LINE_AA)
-            cv2.putText(frame, "First to 3 points wins!", (925,30), font ,  1, (192, 192, 192), 1, cv2.LINE_AA)
+            display_info(round = True)
 
             # at 9 seconds, end the round, break out of while loop
             if (time.time() - t_init) > time_limit: 
@@ -145,8 +145,7 @@ while True:
             user_score += 1
         elif winner == "computer":
             computer_score += 1
-            display_score()
-
+        display_info()
     cv2.imshow('frame', frame)
 
     # end game at 3 points and display text of the winner of the entire game
@@ -161,7 +160,6 @@ while True:
             if (time.time()-t_init) > 2:
                 break
         reset_scores()
-
 
     # Press q to close the window
     if keys == ord('q'):
