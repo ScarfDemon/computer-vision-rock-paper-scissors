@@ -16,8 +16,8 @@ class RPS():
     
     def __init__(self):
         self.time_per_round = 9
-        self.user_score = 0
-        self.computer_score = 0
+        self.user_wins = 0
+        self.computer_wins = 0
         # for rainbow text
         self.colours = [(255,0,0), (255,125,0), (255,255,0), (125,255,0), (0,255,0), (0,255,125), (0,255,255), (0,125,255), (0,0,225), (125,0,255), (255,0,255), (225,0,125)] 
 
@@ -39,7 +39,7 @@ class RPS():
     def display_score(self):
         cv2.putText(self.frame, "You  | Computer", (1000, 600), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
         cv2.putText(self.frame, "________________", (990, 610), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
-        cv2.putText(self.frame, f"  {self.user_score}   |   {self.computer_score}", (987, 645), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
+        cv2.putText(self.frame, f"  {self.user_wins}   |   {self.computer_wins}", (987, 645), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
 
     def display_info(self, round = False): # displays current scores in the window
         predicted_user_choice, probability = self.get_prediction()
@@ -50,7 +50,7 @@ class RPS():
             cv2.putText(self.frame, "      or [Q] to quit", (950,110), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 1, cv2.LINE_AA)
             cv2.putText(self.frame, "You  | Computer", (1000, 600), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
             cv2.putText(self.frame, "________________", (990, 610), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
-            cv2.putText(self.frame, f"  {self.user_score}   |   {self.computer_score}", (987, 645), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
+            cv2.putText(self.frame, f"  {self.user_wins}   |   {self.computer_wins}", (987, 645), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
         cv2.imshow('frame', self.frame)
 
     def display_window(self, cap, data): # Opens window and camera
@@ -65,10 +65,10 @@ class RPS():
     def winner_text(self): # displays text of overall winner of game
         
         for colour in self.colours: # rainbow text
-            if self.user_score == 3:
+            if self.user_wins == 3:
                 cv2.putText(self.frame, "Congratulations!", (50, 300), cv2.FONT_HERSHEY_SIMPLEX ,  3, colour, 2, cv2.LINE_AA)
                 cv2.putText(self.frame, "  You won the game!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, colour, 2, cv2.LINE_AA)
-            elif self.computer_score == 3:
+            elif self.computer_wins == 3:
                 cv2.putText(self.frame, "The computer won ", (50, 300), cv2.FONT_HERSHEY_SIMPLEX ,  3, colour, 2, cv2.LINE_AA)
                 cv2.putText(self.frame, "  the game this time!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, colour, 2, cv2.LINE_AA)
             cv2.imshow('frame', self.frame)
@@ -96,9 +96,9 @@ class RPS():
         return winner
 
     def reset_scores(self, starting_scores = 2): # resets score eg at the end of a game
-        self.computer_score = starting_scores
-        self.user_score = starting_scores
-        return self.computer_score, self.user_score
+        self.computer_wins = starting_scores
+        self.user_wins = starting_scores
+        return self.computer_wins, self.user_wins
 
     def RPS_round(self): # runs a round of RPS: counts down, states game, winner and updates scores
         self.t_init = time.time() # the time at the start of the round
@@ -146,9 +146,9 @@ class RPS():
 
         # add 1 to the score of the winner
         if winner == "user":
-            self.user_score += 1
+            self.user_wins += 1
         elif winner == "computer":
-            self.computer_score += 1
+            self.computer_wins += 1
         self.display_score()
     
     def end_game(self): 
@@ -183,7 +183,7 @@ def play_game():
         cv2.imshow('frame', frame)
         
         # end game at 3 points and display text of the winner of the entire game
-        if (play.user_score == 3) or (play.computer_score == 3): 
+        if (play.user_wins == 3) or (play.computer_wins == 3): 
             play.end_game()
         # Press q to close the window
         if keys == ord('q'):
