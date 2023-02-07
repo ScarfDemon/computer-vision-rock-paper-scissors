@@ -28,19 +28,18 @@ class RPS():
         predicted_user_choice = max(probabilities, key = probabilities.get)
         return predicted_user_choice, probability
 
-    # def get_user_choice(self):
-    #     global predicted_user_choice, probability
-    #     final_user_choice = predicted_user_choice
-    #     final_user_choice_confidence = probability
-    #     return final_user_choice, final_user_choice_confidence
+    def get_user_choice(self, predicted_user_choice, probability):
+        final_user_choice = predicted_user_choice
+        final_user_choice_confidence = probability
+        return final_user_choice, final_user_choice_confidence
 
     # def get_computer_choice(self):
     #     return random.choice(["Rock", "Paper", "Scissors"])
 
-    def display_score(self, computer_score, user_score):
+    def display_score(self):
         cv2.putText(self.frame, "You  | Computer", (1000, 600), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
         cv2.putText(self.frame, "________________", (990, 610), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
-        cv2.putText(self.frame, f"  {user_score}   |   {computer_score}", (987, 645), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
+        cv2.putText(self.frame, f"  {self.user_score}   |   {self.computer_score}", (987, 645), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
 
     def display_info(self, round = False): # displays current scores in the window
         #global computer_score, user_score, font
@@ -125,7 +124,7 @@ class RPS():
     #             cv2.imshow('frame', frame)
     #             cv2.waitKey(2)   
     #         elif (time.time() - t_init) > (self.time_per_round - 4):
-    #             final_user_choice, final_user_choice_confidence = self.get_user_choice()
+    #             final_user_choice, final_user_choice_confidence = self.get_user_choice(predicted_user_choice, probability)
     #         elif (time.time() - t_init) >= 0:
     #             options = ["On shoot, ready?", "Rock", "Paper", "Scissors", "Shoot!"]
     #             for i in range(len(options)):
@@ -167,7 +166,7 @@ def play_game():
 
         play.display_info(frame)
 
-        #play.display_score()
+        play.display_score()
         
         # if keys == ord('s'):
         #     play.RPS_round()
@@ -176,7 +175,7 @@ def play_game():
         
         # if (user_score == 3) or (computer_score == 3):
         #     play.end_game()
-        # Press q to close the window
+        # # Press q to close the window
         if keys == ord('q'):
             break
                 
