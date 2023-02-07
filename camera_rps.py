@@ -18,7 +18,7 @@ class RPS():
         self.time_per_round = 9
         self.user_score = 0
         self.computer_score = 0
-        
+        self.colours = [(255,0,0), (255,125,0), (255,255,0), (125,255,0), (0,255,0), (0,255,125), (0,255,255), (0,125,255), (0,0,225), (125,0,255), (255,0,255), (225,0,125)]
 
     def get_prediction(self):
         prediction = model.predict(data).tolist()
@@ -62,13 +62,17 @@ class RPS():
         return self.frame
 
     def winner_text(self):
-        if self.user_score == 3:
-            cv2.putText(self.frame, "Congratulations!", (50, 300), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
-            cv2.putText(self.frame, "  You won the game!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
-        elif self.computer_score == 3:
-            cv2.putText(self.frame, "The computer won ", (50, 300), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
-            cv2.putText(self.frame, "  the game this time!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
-
+        
+        for colour in self.colours:
+            if self.user_score == 3:
+                cv2.putText(self.frame, "Congratulations!", (50, 300), cv2.FONT_HERSHEY_SIMPLEX ,  3, colour, 2, cv2.LINE_AA)
+                cv2.putText(self.frame, "  You won the game!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, colour, 2, cv2.LINE_AA)
+            elif self.computer_score == 3:
+                cv2.putText(self.frame, "The computer won ", (50, 300), cv2.FONT_HERSHEY_SIMPLEX ,  3, colour, 2, cv2.LINE_AA)
+                cv2.putText(self.frame, "  the game this time!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, colour, 2, cv2.LINE_AA)
+            cv2.imshow('frame', self.frame)
+            cv2.waitKey(2)
+        
     def get_winner(self, final_user_choice, computer_choice):
         P1, P2 = final_user_choice, computer_choice
         if P1 == P2:
@@ -78,11 +82,16 @@ class RPS():
             cv2.putText(self.frame, "No choice detected, please try again!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 1, cv2.LINE_AA)
             winner = "None"
         elif (P1=="Rock" and P2=="Scissors") or (P1=="Paper" and P2=="Rock") or (P1=="Scissors" and P2=="Paper"):
-            cv2.putText(self.frame, "You won!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
+            for colour in self.colours:
+                cv2.putText(self.frame, "You won!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, colour, 2, cv2.LINE_AA)
+                cv2.imshow('frame', self.frame)
+                cv2.waitKey(2)
             winner = "user"
+            
         else:
             cv2.putText(self.frame, "You lost :(", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
             winner = "computer"
+        
         return winner
 
     def reset_scores(self, starting_scores = 2):
@@ -135,8 +144,7 @@ class RPS():
         t_init = time.time()
         while (time.time()-t_init) <= 2: 
             self.winner_text()
-            cv2.imshow('frame', self.frame)
-            cv2.waitKey(2)
+            
             if (time.time()-t_init) > 2:
                 break
         self.reset_scores()
