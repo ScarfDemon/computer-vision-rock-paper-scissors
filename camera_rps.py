@@ -28,124 +28,129 @@ class RPS():
         predicted_user_choice = max(probabilities, key = probabilities.get)
         return predicted_user_choice, probability
 
-    def get_user_choice(self):
-        global predicted_user_choice, probability
-        final_user_choice = predicted_user_choice
-        final_user_choice_confidence = probability
-        return final_user_choice, final_user_choice_confidence
+    # def get_user_choice(self):
+    #     global predicted_user_choice, probability
+    #     final_user_choice = predicted_user_choice
+    #     final_user_choice_confidence = probability
+    #     return final_user_choice, final_user_choice_confidence
 
-    def get_computer_choice(self):
-        return random.choice(["Rock", "Paper", "Scissors"])
+    # def get_computer_choice(self):
+    #     return random.choice(["Rock", "Paper", "Scissors"])
 
-    def display_score(self):
-        global computer_score, user_score
-        cv2.putText(frame, "You  | Computer", (1000, 600), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
-        cv2.putText(frame, "________________", (990, 610), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
-        cv2.putText(frame, f"  {user_score}   |   {computer_score}", (987, 645), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
+    def display_score(self, computer_score, user_score):
+        cv2.putText(self.frame, "You  | Computer", (1000, 600), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
+        cv2.putText(self.frame, "________________", (990, 610), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
+        cv2.putText(self.frame, f"  {user_score}   |   {computer_score}", (987, 645), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
 
-    def display_text_countdown(self, text, t):
-        global t_init, frame
-        if (t < (time.time() - t_init) < (t+1)) and  ((time.time() - t_init) < (self.time_per_round - 2)):
-            cv2.putText(frame, text, (100,400), cv2.FONT_HERSHEY_SIMPLEX ,  2, (192, 192, 192), 2, cv2.LINE_AA)
-            cv2.imshow('frame', frame)
-            cv2.waitKey(2)
+    def display_info(self, round = False): # displays current scores in the window
+        #global computer_score, user_score, font
+        predicted_user_choice, probability = self.get_prediction()
+        cv2.putText(self.frame, f"You're choice: {predicted_user_choice}  Confidence: {probability}", (50,50), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
+        cv2.putText(self.frame, "First to 3 points wins!", (925,30), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 1, cv2.LINE_AA)
+        if round.all() == False:
+            cv2.putText(self.frame, "  Press [S] to start", (950,70), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 1, cv2.LINE_AA)
+            cv2.putText(self.frame, "      or [Q] to quit", (950,110), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 1, cv2.LINE_AA)
+            cv2.putText(self.frame, "You  | Computer", (1000, 600), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
+            cv2.putText(self.frame, "________________", (990, 610), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
+            cv2.putText(self.frame, f"  {self.user_score}   |   {self.computer_score}", (987, 645), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
+        cv2.imshow('frame', self.frame)
 
     def display_window(self, cap, data):
-        ret, frame = cap.read()
-        resized_frame = cv2.resize(frame, (224, 224), interpolation = cv2.INTER_AREA)
+        ret, self.frame = cap.read()
+        resized_frame = cv2.resize(self.frame, (224, 224), interpolation = cv2.INTER_AREA)
         image_np = np.array(resized_frame)
         normalized_image = (image_np.astype(np.float32) / 127.0) - 1 # Normalize the image
         data[0] = normalized_image
-        return frame
 
-    def winner_text(self):
-        global frame
-        if self.user_score == 3:
-            cv2.putText(frame, "Congratulations!", (50, 300), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
-            cv2.putText(frame, "  You won the game!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
-        elif self.computer_score == 3:
-            cv2.putText(frame, "The computer won ", (50, 300), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
-            cv2.putText(frame, "  the game this time!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
+        return self.frame
 
-    def get_winner(self, final_user_choice, computer_choice):
-        global frame
-        P1, P2 = final_user_choice, computer_choice
-        if P1 == P2:
-            cv2.putText(frame, "It's a tie!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
-            winner = "None"
-        elif P1 == "Nothing":
-            cv2.putText(frame, "No choice detected, please try again!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 1, cv2.LINE_AA)
-            winner = "None"
-        elif (P1=="Rock" and P2=="Scissors") or (P1=="Paper" and P2=="Rock") or (P1=="Scissors" and P2=="Paper"):
-            cv2.putText(frame, "You won!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
-            winner = "user"
-        else:
-            cv2.putText(frame, "You lost :(", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
-            winner = "computer"
-        return winner
+    # def winner_text(self):
+    #     #global frame
+    #     if self.user_score == 3:
+    #         cv2.putText(frame, "Congratulations!", (50, 300), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
+    #         cv2.putText(frame, "  You won the game!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
+    #     elif self.computer_score == 3:
+    #         cv2.putText(frame, "The computer won ", (50, 300), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
+    #         cv2.putText(frame, "  the game this time!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
 
-    def reset_scores(self, starting_scores = 2):
-        computer_score = starting_scores
-        user_score = starting_scores
-        return computer_score, user_score
+    # def get_winner(self, final_user_choice, computer_choice):
+    #     #global frame
+    #     P1, P2 = final_user_choice, computer_choice
+    #     if P1 == P2:
+    #         cv2.putText(frame, "It's a tie!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
+    #         winner = "None"
+    #     elif P1 == "Nothing":
+    #         cv2.putText(frame, "No choice detected, please try again!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 1, cv2.LINE_AA)
+    #         winner = "None"
+    #     elif (P1=="Rock" and P2=="Scissors") or (P1=="Paper" and P2=="Rock") or (P1=="Scissors" and P2=="Paper"):
+    #         cv2.putText(frame, "You won!", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
+    #         winner = "user"
+    #     else:
+    #         cv2.putText(frame, "You lost :(", (50, 400), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
+    #         winner = "computer"
+    #     return winner
 
-    def RPS_round(self):
-        t_init = time.time()
-        self.time_per_round = 9
-        computer_choice = self.get_computer_choice()
+    # def reset_scores(self, starting_scores = 2):
+    #     computer_score = starting_scores
+    #     user_score = starting_scores
+    #     return computer_score, user_score
 
-        while True:
+    # def RPS_round(self):
+    #     t_init = time.time()
+    #     self.time_per_round = 9
+    #     computer_choice = self.get_computer_choice()
 
-            frame = self.display_window(cap, data)
-            predicted_user_choice, probability = self.get_prediction()
-            cv2.putText(frame, f"You're choice: {predicted_user_choice}  Confidence: {probability}", (50,50), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
-            cv2.putText(frame, "First to 3 points wins!", (925,30), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 1, cv2.LINE_AA)
+    #     def display_text_countdown(text, t):
+    #         global t_init, frame
+    #         if (t < (time.time() - t_init) < (t+1)) and  ((time.time() - t_init) < (self.time_per_round - 2)):
+    #             cv2.putText(frame, text, (100,400), cv2.FONT_HERSHEY_SIMPLEX ,  2, (192, 192, 192), 2, cv2.LINE_AA)
+    #             cv2.imshow('frame', frame)
+    #             cv2.waitKey(2)
 
-            if (time.time() - t_init) > self.time_per_round:
-                break
-            elif (time.time() - t_init) > (self.time_per_round - 2):
-                winner = self.get_winner(final_user_choice, computer_choice)
-                cv2.imshow('frame', frame)
-                cv2.waitKey(2)
-            elif (time.time() - t_init) > (self.time_per_round - 3):
-                print(time.time() - t_init)
-                cv2.putText(frame, f"{final_user_choice} vs {computer_choice}", (50, 300), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
-                cv2.imshow('frame', frame)
-                cv2.waitKey(2)   
-            elif (time.time() - t_init) > (self.time_per_round - 4):
-                final_user_choice, final_user_choice_confidence = self.get_user_choice()
-            elif (time.time() - t_init) >= 0:
-                options = ["On shoot, ready?", "Rock", "Paper", "Scissors", "Shoot!"]
-                for i in range(len(options)):
-                    self.display_text_countdown(options[i], i)
+    #     while True:
 
-        if winner == "user":
-            self.user_score += 1
-        elif winner == "computer":
-            self.computer_score += 1
-        self.display_score()
+    #         frame = self.display_window(cap, data)
+    #         predicted_user_choice, probability = self.get_prediction()
+    #         self.display_info(round = True)
+
+    #         if (time.time() - t_init) > self.time_per_round:
+    #             break
+    #         elif (time.time() - t_init) > (self.time_per_round - 2):
+    #             winner = self.get_winner(final_user_choice, computer_choice)
+    #             cv2.imshow('frame', frame)
+    #             cv2.waitKey(2)
+    #         elif (time.time() - t_init) > (self.time_per_round - 3):
+    #             print(time.time() - t_init)
+    #             cv2.putText(frame, f"{final_user_choice} vs {computer_choice}", (50, 300), cv2.FONT_HERSHEY_SIMPLEX ,  3, (192, 192, 192), 2, cv2.LINE_AA)
+    #             cv2.imshow('frame', frame)
+    #             cv2.waitKey(2)   
+    #         elif (time.time() - t_init) > (self.time_per_round - 4):
+    #             final_user_choice, final_user_choice_confidence = self.get_user_choice()
+    #         elif (time.time() - t_init) >= 0:
+    #             options = ["On shoot, ready?", "Rock", "Paper", "Scissors", "Shoot!"]
+    #             for i in range(len(options)):
+    #                 display_text_countdown(options[i], i)
+
+    #     if winner == "user":
+    #         self.user_score += 1
+    #     elif winner == "computer":
+    #         self.computer_score += 1
+    #     self.display_score(self.computer_score, self.user_score)
     
-    def end_game(self):
-        t_init = time.time()
-        broken = False
-        while ((time.time()-t_init) <= 2) and (broken == False):
-            self.winner_text()
-            cv2.imshow('frame', frame)
-            cv2.waitKey(2)
-            if (time.time()-t_init) > 2:
-                broken = True
-            if broken == True:
-                self.computer_score, self.user_score = self.reset_scores()
-                break
+    # def end_game(self):
+    #     t_init = time.time()
+    #     broken = False
+    #     while ((time.time()-t_init) <= 2) and (broken == False):
+    #         self.winner_text()
+    #         cv2.imshow('frame', frame)
+    #         cv2.waitKey(2)
+    #         if (time.time()-t_init) > 2:
+    #             broken = True
+    #         if broken == True:
+    #             self.computer_score, self.user_score = self.reset_scores()
+    #             break
     
-    def display_window_text(self):
-        global frame, cap, data
-        frame = self.display_window(cap, data)
-        predicted_user_choice, probability = self.get_prediction()
-        cv2.putText(frame, f"You're choice: {predicted_user_choice}  Confidence: {probability}", (50,50), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 2, cv2.LINE_AA)
-        cv2.putText(frame, "First to 3 points wins!", (925,30), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 1, cv2.LINE_AA)
-        cv2.putText(frame, "  Press [S] to start", (950,70), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 1, cv2.LINE_AA)
-        cv2.putText(frame, "      or [Q] to quit", (950,110), cv2.FONT_HERSHEY_SIMPLEX ,  1, (192, 192, 192), 1, cv2.LINE_AA)
+
 
 
     
@@ -156,12 +161,13 @@ def play_game():
     #play.reset_scores()
 
     while True: 
-
         keys = cv2.waitKey(1) & 0xFF
-        
-        play.display_window_text()
 
-        play.display_score()
+        frame = play.display_window (cap, data)
+
+        play.display_info(frame)
+
+        #play.display_score()
         
         # if keys == ord('s'):
         #     play.RPS_round()
@@ -178,4 +184,7 @@ def play_game():
     cap.release()
     # Destroy all the windows
     cv2.destroyAllWindows()
+
+if __name__ == '__main__':
+    play_game()
 
