@@ -1,7 +1,7 @@
 # Computer Vision RPS
 In this project a trained computer vision model was produced using [Teachable-Machine](https://teachablemachine.withgoogle.com/). Using this model, we can play a game of 'Rock, Paper, Scissors' by showing a hand gesture to the camera.
 
-First to 3 points! if you win, a colourful message is displayed!
+First to 3 points! If you win, a colourful message is displayed!
 
 ![](RPS-image.png)
 
