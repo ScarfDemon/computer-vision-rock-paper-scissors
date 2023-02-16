@@ -152,8 +152,7 @@ class RPS():
             self.winner_text()
             if (time.time()-t_init) > 2:
                 break
-        self.reset_scores(0) # reset the scores at the end of the game
-    
+        self.reset_scores(0) # reset the scores at the end of the game  
     
 # %%
 
