@@ -28,12 +28,12 @@ class RPS():
     def get_computer_choice(self): # randomly chooses computer's choice for a round
         return random.choice(["Rock", "Paper", "Scissors"])
 
-    def display_score(self):
+    def display_score(self): # displays current scores in the window
         cv2.putText(self.frame, "You  | Computer", (1000, 600), cv2.FONT_HERSHEY_SIMPLEX ,  1, (0,0,0), 2, cv2.LINE_AA)
         cv2.putText(self.frame, "________________", (990, 610), cv2.FONT_HERSHEY_SIMPLEX ,  1, (0,0,0), 2, cv2.LINE_AA)
         cv2.putText(self.frame, f"  {self.user_wins}   |   {self.computer_wins}", (987, 645), cv2.FONT_HERSHEY_SIMPLEX ,  1, (0,0,0), 2, cv2.LINE_AA)
 
-    def display_info(self, round = False): # displays current scores in the window
+    def display_info(self, round = False): # displays user choice and instructions in window
         predicted_user_choice, probability = self.get_prediction()
         cv2.putText(self.frame, f"You're choice: {predicted_user_choice}  Confidence: {probability}", (50,50), cv2.FONT_HERSHEY_SIMPLEX ,  1, (0,0,0), 2, cv2.LINE_AA)
         cv2.putText(self.frame, "First to 3 points wins!", (925,30), cv2.FONT_HERSHEY_SIMPLEX ,  1, (0,0,0), 1, cv2.LINE_AA)
