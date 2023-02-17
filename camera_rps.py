@@ -52,7 +52,7 @@ class RPS():
         data[0] = normalized_image
         return self.frame
 
-    def winner_text(self): # displays text of overall winner of game
+    def display_winner_text(self): # displays text of overall winner of game
         
         for colour in self.colours: # rainbow text
             if self.user_wins == 3:
@@ -147,7 +147,7 @@ class RPS():
 
         # put overall winner text on for 2 seconds
         while (time.time()-t_init) <= 2: 
-            self.winner_text()
+            self.display_winner_text()
             if (time.time()-t_init) > 2:
                 break
         self.reset_scores(0) # reset the scores at the end of the game 
