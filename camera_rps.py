@@ -150,36 +150,36 @@ class RPS():
             self.winner_text()
             if (time.time()-t_init) > 2:
                 break
-        self.reset_scores(0) # reset the scores at the end of the game  
+        self.reset_scores(0) # reset the scores at the end of the game 
+
+    def play_game(self):
+        self.reset_scores()
+
+        while True: 
+            keys = cv2.waitKey(1) & 0xFF
+            self.frame = self.display_window (cap, data)
+            self.display_info() # display game info on window
+            
+            if keys == ord('s'): # press s to start round
+                self.RPS_round() # play round
+
+            cv2.imshow('frame', self.frame)
+            # end game at 3 points and display text of the winner of the entire game
+            if (self.user_wins == 3) or (self.computer_wins == 3): 
+                self.end_game()
+            
+            # Press q to close the window
+            if keys == ord('q'):
+                break
+                    
+        # After the loop release the cap object
+        cap.release()
+        # Destroy all the windows
+        cv2.destroyAllWindows() 
     
 # %%
 
-def play_game():
-    play = RPS()
-    play.reset_scores()
-
-    while True: 
-        keys = cv2.waitKey(1) & 0xFF
-        frame = play.display_window (cap, data)
-        play.display_info() # display game info on window
-        
-        if keys == ord('s'): # press s to start round
-            play.RPS_round() # play round
-
-        cv2.imshow('frame', frame)
-        # end game at 3 points and display text of the winner of the entire game
-        if (play.user_wins == 3) or (play.computer_wins == 3): 
-            play.end_game()
-        
-        # Press q to close the window
-        if keys == ord('q'):
-            break
-                
-    # After the loop release the cap object
-    cap.release()
-    # Destroy all the windows
-    cv2.destroyAllWindows()
-
 if __name__ == '__main__':
-    play_game()
+    RPS().play_game()
+
 
